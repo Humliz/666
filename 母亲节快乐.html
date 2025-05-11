@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>母亲节特别祝福 - 来自远方的爱</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: linear-gradient(45deg, #ffb6c1, #ff69b4);
+            font-family: "Microsoft YaHei", sans-serif;
+            touch-action: manipulation;
+        }
+
+        #mainPanel {
+            position: absolute;
+            width: 80%;
+            left: 10%;
+            top: 20%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            backdrop-filter: blur(5px);
+        }
+
+        .button {
+            padding: 12px 24px;
+            margin: 10px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 80%;
+        }
+
+        #yesBtn {
+            background: #ff1493;
+            color: white;
+        }
+
+        #noBtn {
+            background: #666;
+            color: white;
+        }
+
+        #message {
+            text-align: center;
+            color: #8b0000;
+            font-size: 1.2em;
+            margin: 15px 0;
+        }
+
+        #musicTip {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255,255,255,0.9);
+            padding: 12px 24px;
+            border-radius: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            color: #ff1493;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 1001;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-8px); }
+        }
+
+        .heart {
+            position: absolute;
+            color: #ff69b4;
+            user-select: none;
+            pointer-events: none;
+            filter: drop-shadow(0 0 5px rgba(255,105,180,0.5));
+        }
+
+        #musicControl {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s;
+            z-index: 1000;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <!-- 音乐激活提示 -->
+    <div id="musicTip">
+        🔊 点击任意位置激活音乐祝福
+    </div>
+
+    <!-- 主界面内容 -->
+    <div id="mainPanel">
+        <div id="message">
+            <p style="font-size:1.3em">👩👧 思念正在连线中...</p>
+            <div style="color: #8b0000; animation: pulse 2s infinite">
+                📍 当前距离：柳州→贵港 145公里
+            </div>
+            <p>虽然相隔百里<br>但爱意随时可达！</p>
+        </div>
+        <button class="button" id="yesBtn">开启爱心礼盒</button>
+        <button class="button" id="noBtn">假装没看见</button>
+    </div>
+
+    <!-- 音乐控制 -->
+    <div id="musicControl" onclick="toggleMusic()">
+        <svg id="musicIcon" viewBox="0 0 24 24" style="width:24px;height:24px">
+            <path fill="#ff1493" d="M8 5v14l11-7z"/>
+        </svg>
+    </div>
+
+    <!-- 修改后的音乐URL -->
+    <audio id="bgMusic" loop>
+        <source src="https://er-sycdn.kuwo.cn/ee12340a9f070bbb6fbfa71f071d9066/682073b0/resource/30106/trackmedia/M500004A8hUM17iBWM.mp3?bitrate%24128&from=vip" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // 音乐初始化逻辑
+        let isMusicReady = false;
+        const music = document.getElementById('bgMusic');
+        
+        document.addEventListener('click', () => {
+            if(!isMusicReady) {
+                music.muted = false;
+                music.play().then(() => {
+                    music.pause();
+                    document.getElementById('musicTip').style.display = 'none';
+                    isMusicReady = true;
+                }).catch(() => {
+                    alert('请允许页面播放音乐');
+                });
+            }
+        }, { once: true });
+
+        // 音乐控制函数
+        function toggleMusic() {
+            if(music.paused) {
+                music.play();
+                document.getElementById('musicIcon').innerHTML = '<path fill="#ff1493" d="M6 4h4v16H6zm8 0h4v16h-4z"/>';
+            } else {
+                music.pause();
+                document.getElementById('musicIcon').innerHTML = '<path fill="#ff1493" d="M8 5v14l11-7z"/>';
+            }
+        }
+
+        // 爱心雨特效
+        function createHearts() {
+            const container = document.body;
+            
+            function createHeart() {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = '❤';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.fontSize = Math.random() * 30 + 20 + 'px';
+                
+                const duration = Math.random() * 3 + 2;
+                heart.style.animation = `fall ${duration}s linear infinite`;
+                container.appendChild(heart);
+                setTimeout(() => heart.remove(), duration * 1000);
+            }
+            setInterval(createHeart, 300);
+        }
+
+        // 按钮事件绑定
+        document.addEventListener('DOMContentLoaded', function() {
+            // 确认按钮
+            document.getElementById('yesBtn').onclick = function() {
+                document.getElementById('mainPanel').style.display = 'none';
+                createHearts();
+                
+                const blessing = document.createElement('div');
+                blessing.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    font-size: 2em;
+                    color: white;
+                    text-align: center;
+                    text-shadow: 0 0 10px rgba(255,105,180,0.8);
+                    animation: pulse 2s infinite;
+                `;
+                blessing.innerHTML = '妈妈，我爱您！<br>❤ 母亲节快乐 ❤';
+                document.body.appendChild(blessing);
+            };
+
+            // 拒绝按钮
+            let rejectCount = 0;
+            const rejectMessages = [
+                '快递已在途中，无法取消！',
+                '检测到违心操作，已自动修正',
+                '系统强制签收中...',
+                '💖 签收成功！'
+            ];
+
+            document.getElementById('noBtn').onclick = function() {
+                if(rejectCount < 3) {
+                    alert(rejectMessages[rejectCount]);
+                    rejectCount++;
+                    this.style.transform = `translateX(${Math.random()*10-5}px)`;
+                    setTimeout(() => this.style.transform = '', 200);
+                } else {
+                    alert(rejectMessages[3]);
+                    document.getElementById('mainPanel').style.display = 'none';
+                    createHearts();
+                }
+            };
+        });
+
+        // 触摸屏优化
+        document.querySelectorAll('.button').forEach(btn => {
+            btn.addEventListener('touchstart', () => btn.style.transform = 'scale(0.95)');
+            btn.addEventListener('touchend', () => btn.style.transform = '');
+        });
+    </script>
+</body>
+</html>
